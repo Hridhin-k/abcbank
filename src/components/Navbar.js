@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { Outlet, useNavigate } from "react-router-dom";
 
 function Navbar() {
   const Navigate = useNavigate();
   const [header, setHeader] = useState(false);
-
+  const positiveBalance = useSelector((state) => state.account.activity);
+  const [alert, setAlert] = useState(false);
+  const currentTab = window.location.href.split("/")[4];
   useEffect(() => {
     Navigate("/user/home");
   }, []);
@@ -13,16 +16,32 @@ function Navbar() {
     Navigate("/user/home");
   };
 
-  const onClickDeposite = () => {
-    Navigate("/user/deposite");
+  const onClickDeposit = () => {
+    Navigate("/user/deposit");
   };
 
   const onClickWithdraw = () => {
-    Navigate("/user/withdraw");
+    if (positiveBalance) {
+      Navigate("/user/withdraw");
+    } else {
+      setAlert(true);
+
+      setTimeout(() => {
+        setAlert(false);
+      }, 3000);
+    }
   };
 
   const onClickTransfer = () => {
-    Navigate("/user/transfer");
+    if (positiveBalance) {
+      Navigate("/user/transfer");
+    } else {
+      setAlert(true);
+
+      setTimeout(() => {
+        setAlert(false);
+      }, 3000);
+    }
   };
 
   const onClickStatement = () => {
@@ -45,7 +64,11 @@ function Navbar() {
           <div className="flex justify-center">
             <div className="hidden md:flex items-center space-x-1">
               <p
-                className="py-4 px-3  text-gray-500 font-semibold border-b-4 border-white hover:text-blue-500 hover:border-blue-500"
+                className={`${
+                  currentTab === "home"
+                    ? "text-blue-500 border-blue-500"
+                    : "text-gray-500 border-white"
+                } py-4 px-3   font-semibold border-b-4 hover:text-blue-500 hover:border-blue-500`}
                 onClick={onClickHome}
               >
                 <svg
@@ -65,8 +88,12 @@ function Navbar() {
                 Home
               </p>
               <p
-                className="py-4 px-3  text-gray-500 font-semibold border-b-4 border-white hover:text-blue-500 hover:border-blue-500  "
-                onClick={onClickDeposite}
+                className={`${
+                  currentTab === "deposit"
+                    ? "text-blue-500 border-blue-500"
+                    : "text-gray-500 border-white"
+                } py-4 px-3   font-semibold border-b-4 hover:text-blue-500 hover:border-blue-500`}
+                onClick={onClickDeposit}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -82,10 +109,14 @@ function Navbar() {
                     d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z"
                   />
                 </svg>
-                Deposite
+                Deposit
               </p>
               <p
-                className="py-4 px-3  text-gray-500 font-semibold border-b-4 border-white hover:text-blue-500 hover:border-blue-500  "
+                className={`${
+                  currentTab === "withdraw"
+                    ? "text-blue-500 border-blue-500"
+                    : "text-gray-500 border-white"
+                } py-4 px-3   font-semibold border-b-4 hover:text-blue-500 hover:border-blue-500`}
                 onClick={onClickWithdraw}
               >
                 <svg
@@ -105,7 +136,11 @@ function Navbar() {
                 Withdraw
               </p>
               <p
-                className="py-4 px-3  text-gray-500 font-semibold border-b-4 border-white hover:text-blue-500 hover:border-blue-500  "
+                className={`${
+                  currentTab === "transfer"
+                    ? "text-blue-500 border-blue-500"
+                    : "text-gray-500 border-white"
+                } py-4 px-3   font-semibold border-b-4 hover:text-blue-500 hover:border-blue-500`}
                 onClick={onClickTransfer}
               >
                 <svg
@@ -125,7 +160,11 @@ function Navbar() {
                 Transfer
               </p>
               <p
-                className="py-4 px-3  text-gray-500 font-semibold border-b-4 border-white hover:text-blue-500 hover:border-blue-500  "
+                className={`${
+                  currentTab === "statement"
+                    ? "text-blue-500 border-blue-500"
+                    : "text-gray-500 border-white"
+                } py-4 px-3   font-semibold border-b-4 hover:text-blue-500 hover:border-blue-500`}
                 onClick={onClickStatement}
               >
                 <svg
@@ -166,7 +205,15 @@ function Navbar() {
               </p>
             </div>
           </div>
-
+          <div
+            className={`${
+              alert === true ? "block" : "hidden"
+            } flex justify-center`}
+          >
+            <p className=" text-center py-1 rounded-lg bg-red-700 text-white md:w-3/5 mb-2 ">
+              you dont have enough balance to make a transaction
+            </p>
+          </div>
           <div className="md:hidden flex items-center">
             <button
               onClick={onHeaderButtonClick}
@@ -200,7 +247,7 @@ function Navbar() {
             </li>
             <li>
               <p
-                onClick={onClickDeposite}
+                onClick={onClickDeposit}
                 className="block text-sm px-2 py-4 text-gray-500 hover:bg-blue-500 hover:text-white transition duration-300"
               >
                 Deposite

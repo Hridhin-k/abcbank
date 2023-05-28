@@ -1,26 +1,28 @@
 import React, { useEffect, useState } from "react";
-import { db } from "../firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { fetchBasicDetails } from "../feature/slice/accountSlice";
+import { useDispatch, useSelector } from "react-redux";
 function HomeComponent() {
-  const [accountUser, setAccountUser] = useState([]);
-  const accountCollection = collection(db, "accountdetails");
+  const dispatch = useDispatch();
+  const userId = localStorage.getItem("user_id");
+  const userEmail = localStorage.getItem("user_email");
+  const [balance, setBalance] = useState(0);
+  const userAccountData = useSelector((state) => state.account.accountDetail);
   useEffect(() => {
-    const getDetails = async () => {
-      try {
-        const data = await getDocs(accountCollection);
-        const fetchedData = data.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setAccountUser(fetchedData);
-        console.log(accountUser);
-      } catch (error) {
-        setAccountUser([]);
-        console.log("Error fetching data:", error);
-      }
-    };
-    getDetails();
-  }, []);
+    dispatch(fetchBasicDetails({ userId }))
+      .then(() => {
+        if (userAccountData.length !== 0) {
+          setBalance(userAccountData?.account_balance);
+        }
+      })
+      .catch(() => {
+        console.log("basic detail fetch failure");
+      });
+  }, [
+    dispatch,
+    userAccountData?.account_balance,
+    userAccountData.length,
+    userId,
+  ]);
 
   return (
     <>
@@ -34,11 +36,11 @@ function HomeComponent() {
 
           <div className=" py-3 flex border-b border-gray-300">
             <div className="w-40 pl-8 ">YOUR ID</div>
-            <div className="font-bold">{accountUser[0]?.owner}</div>
+            <div className="font-bold">{userEmail}</div>
           </div>
           <div className="py-3 flex ">
             <div className="w-40 pl-8">YOUR BALANCE</div>
-            <div className="font-bold">{accountUser[0]?.balance} INR</div>
+            <div className="font-bold">{balance} INR</div>
           </div>
         </div>
       </div>

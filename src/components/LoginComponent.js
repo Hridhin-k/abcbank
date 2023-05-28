@@ -1,30 +1,24 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
+
+import { useDispatch } from "react-redux";
+import { login } from "../feature/slice/userSlice";
 
 function LoginComponent() {
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
   const Navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const onSubmit = (e) => {
     e.preventDefault();
 
-    signInWithEmailAndPassword(auth, userEmail, userPassword)
-      .then((userCredential) => {
-        // Signed in
-        const user = userCredential.user;
-        console.log(user);
-        localStorage.setItem("token", user.accessToken);
-        localStorage.setItem("user", user.email);
+    dispatch(login({ userEmail, userPassword }))
+      .then(() => {
         Navigate("/user");
-        // ...
       })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorMessage, errorCode);
+      .catch(() => {
+        console.log("error in login");
       });
   };
   return (

@@ -35,7 +35,7 @@ function App() {
             />
 
             <Route
-              path="deposite"
+              path="deposit"
               element={
                 <Protectedroute>
                   <DepositeComponent />

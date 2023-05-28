@@ -1,18 +1,20 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
+import { addNewUser } from "../feature/slice/userSlice";
+import { useDispatch } from "react-redux";
 
 function SignupComponent() {
+  const [userName, setUserName] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
   const [message, setMessage] = useState("");
   const [messageFlag, setMessageFlag] = useState(false);
   const Navigate = useNavigate();
+  const dispatch = useDispatch();
   const onSubmit = (e) => {
     e.preventDefault();
-    createUserWithEmailAndPassword(auth, userEmail, userPassword)
-      .then((userCredential) => {
+    dispatch(addNewUser({ userName, userEmail, userPassword }))
+      .then(() => {
         //signup successful
         setMessage("user registerd succesfully");
         setMessageFlag(true);
@@ -20,9 +22,8 @@ function SignupComponent() {
           Navigate("/");
         }, 2000);
       })
-      .catch((error) => {
-        const errorMessage = error.message;
-        setMessage(errorMessage);
+      .catch(() => {
+        setMessage("error in signup");
         setMessageFlag(false);
         // ..
       });
@@ -43,12 +44,31 @@ function SignupComponent() {
                   type="email"
                   className="block text-sm font-semibold text-gray-800"
                 >
+                  Name
+                </label>
+                <input
+                  placeholder="Enter Username"
+                  type="text"
+                  required
+                  value={userName}
+                  onChange={(e) => {
+                    setUserName(e.target.value);
+                  }}
+                  className="block w-full px-4 py-2 mt-2 text-blue-700 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                />
+              </div>
+              <div className="mb-2">
+                <label
+                  type="email"
+                  className="block text-sm font-semibold text-gray-800"
+                >
                   Email
                 </label>
                 <input
                   placeholder="Enter email"
                   required
                   value={userEmail}
+                  type="email"
                   onChange={(e) => {
                     setUserEmail(e.target.value);
                   }}
@@ -65,6 +85,7 @@ function SignupComponent() {
                 <input
                   placeholder="Enter password"
                   required
+                  type="password"
                   value={userPassword}
                   onChange={(e) => {
                     setUserPassword(e.target.value);

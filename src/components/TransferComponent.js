@@ -16,7 +16,7 @@ function TransferComponent() {
       .then(() => {
         setTransferEmail("");
         setTransferedAmount(0);
-        setMessage("Amount debited successfully !!");
+        setMessage("Amount transfered successfully !!");
         setMessageFlag(true);
         setTimeout(() => {
           setMessage("");

@@ -1,69 +1,92 @@
 import { Route, Routes } from "react-router-dom";
-import LoginComponent from "./components/LoginComponent";
-import SignupComponent from "./components/SignupComponent";
-import HomeComponent from "./components/HomeComponent";
-import DepositeComponent from "./components/DepositeComponent";
-import WithdrawComponent from "./components/WithdrawComponent";
-import TransferComponent from "./components/TransferComponent";
-import StatementComponent from "./components/StatementComponent";
-import Navbar from "./components/Navbar";
+
 import Protectedroute from "./protectedRoutes";
+import { Suspense, lazy } from "react";
+const LoginComponent = lazy(() => import("./components/LoginComponent")); //dynamic import for lazy loading
+const SignupComponent = lazy(() => import("./components/SignupComponent"));
+const HomeComponent = lazy(() => import("./components/HomeComponent"));
+const DepositeComponent = lazy(() => import("./components/DepositeComponent"));
+const WithdrawComponent = lazy(() => import("./components/WithdrawComponent"));
+const TransferComponent = lazy(() => import("./components/TransferComponent"));
+const StatementComponent = lazy(() =>
+  import("./components/StatementComponent")
+);
+const Navbar = lazy(() => import("./components/Navbar"));
 
 function App() {
   return (
     <>
       <div className="bg-gray-200 h-screen">
         <Routes>
-          <Route path="/" element={<LoginComponent />} />
+          <Route
+            path="/"
+            element={
+              <Suspense fallback={<h1>...Loading</h1>}>
+                <LoginComponent />
+              </Suspense>
+            }
+          />
 
           <Route path="/register" element={<SignupComponent />} />
           <Route
             path="/user"
             element={
-              <Protectedroute>
-                <Navbar />
-              </Protectedroute>
+              <Suspense fallback={<h1>...Loading</h1>}>
+                <Protectedroute>
+                  <Navbar />
+                </Protectedroute>
+              </Suspense>
             }
           >
             <Route
               path="home"
               element={
-                <Protectedroute>
-                  <HomeComponent />
-                </Protectedroute>
+                <Suspense fallback={<h1>...Loading</h1>}>
+                  <Protectedroute>
+                    <HomeComponent />
+                  </Protectedroute>
+                </Suspense>
               }
             />
 
             <Route
               path="deposit"
               element={
-                <Protectedroute>
-                  <DepositeComponent />
-                </Protectedroute>
+                <Suspense fallback={<h1>...Loading</h1>}>
+                  <Protectedroute>
+                    <DepositeComponent />
+                  </Protectedroute>
+                </Suspense>
               }
             />
             <Route
               path="withdraw"
               element={
-                <Protectedroute>
-                  <WithdrawComponent />
-                </Protectedroute>
+                <Suspense fallback={<h1>...Loading</h1>}>
+                  <Protectedroute>
+                    <WithdrawComponent />
+                  </Protectedroute>
+                </Suspense>
               }
             />
             <Route
               path="transfer"
               element={
-                <Protectedroute>
-                  <TransferComponent />
-                </Protectedroute>
+                <Suspense fallback={<h1>...Loading</h1>}>
+                  <Protectedroute>
+                    <TransferComponent />
+                  </Protectedroute>
+                </Suspense>
               }
             />
             <Route
               path="statement"
               element={
-                <Protectedroute>
-                  <StatementComponent />
-                </Protectedroute>
+                <Suspense fallback={<h1>...Loading</h1>}>
+                  <Protectedroute>
+                    <StatementComponent />
+                  </Protectedroute>
+                </Suspense>
               }
             />
           </Route>

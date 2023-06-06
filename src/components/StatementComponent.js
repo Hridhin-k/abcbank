@@ -22,6 +22,7 @@ function StatementComponent() {
 
   useEffect(() => {
     dispatch(fetchBankStatement({ userId }))
+      .unwrap()
       .then(() => {
         console.group("success");
       })
